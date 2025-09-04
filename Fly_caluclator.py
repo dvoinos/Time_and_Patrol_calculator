@@ -9,6 +9,7 @@ def print_menu():
     print("2️⃣  Додати два значення часу")
     print("3️⃣  Розрахунок палива для літака")
     print("4️⃣  Сума багатьох введених часів")
+    print("0️⃣  Вихід")
     print("=" * 40)
     print("         created by Wadoz")
     print("=" * 40)
@@ -60,6 +61,7 @@ def patrol_calculator():
     print(
         f'Загальна формула : За першу годину польоту -> 1400 мл. + решта часу : {int_hours_value} годин -> {calculate_last_hours} мл. ')
 
+
 def sum_hours_minutes(time_list):
     total_duration = timedelta()
     for hours, minutes in time_list:
@@ -68,6 +70,7 @@ def sum_hours_minutes(time_list):
     total_hours = total_seconds // 3600
     total_minutes = (total_seconds % 3600) // 60
     return total_hours, total_minutes
+
 
 def patrol_calculator():
     print('Введіть поокремо години та хвилини ')
@@ -95,57 +98,79 @@ def patrol_calculator():
     print(
         f'Загальна формула : За першу годину польоту -> 1400 мл. + решта часу : {int_hours_value} годин -> {calculate_last_hours} мл. ')
 
+
 def main():
-    print_menu()
-    choice = input("Ваш вибір: ")
+    while True:
+        print_menu()
+        choice = input("Ваш вибір : ")
 
-    if choice == "1":
-        first_input = input('Введіть першу годину у форматі (15:30): ')
-        second_input = input('Введіть другу годину у форматі (8:15): ')
-        first_time = tuple(map(int, first_input.split(':')))
-        second_time = tuple(map(int, second_input.split(':')))
-        delta_h, delta_m = diff_hours_minutes(first_time, second_time)
-        print(f"Різниця часу: {delta_h} годин та {delta_m} хвилин")
+        if choice == "0":
+            print("✅ Програма завершена користувачем.")
+            break
 
-    elif choice == "2":
-        first_input = input('Введіть першу годину у форматі (16:30): ')
-        second_input = input('Введіть другу годину у форматі (26:15): ')
-        first_time = tuple(map(int, first_input.split(':')))
-        second_time = tuple(map(int, second_input.split(':')))
-        total_h, total_m = sum_hours_minutes([first_time, second_time])
-        print(f"Загальний час: {total_h} годин та {total_m} хвилин")
-
-    elif choice == "3":
-        patrol_calculator()
-    elif choice == "4":
-        time_list = []
-        while True:
-            if time_list:  # якщо список не пустий
-                print("Введені часи:", ", ".join([f"{h:02d}:{m:02d}" for h, m in time_list]))
-            data_input = input("Введіть час у форматі ГГ:ХХ (наприклад 01:30). "
-                               "Введіть '=' щоб підрахувати суму, або 'q' щоб вийти: ")
-
-            if data_input == "=":
-                total_h, total_m = sum_hours_minutes(time_list)
-                print("Введені часи:", ", ".join([f"{h:02d}:{m:02d}" for h, m in time_list]))
-
-                print(f"Загальний час: {total_h} годин та {total_m} хвилин")
+        elif choice == "1":
+            first_input = input('Введіть першу годину у форматі (15:30): ')
+            if first_input == "0":
                 break
-            elif data_input == "-":
+            second_input = input('Введіть другу годину у форматі (8:15): ')
+            if second_input == "0":
+                break
+            first_time = tuple(map(int, first_input.split(':')))
+            second_time = tuple(map(int, second_input.split(':')))
+            delta_h, delta_m = diff_hours_minutes(first_time, second_time)
+            print(f"Різниця часу: {delta_h} годин та {delta_m} хвилин")
+
+        elif choice == "2":
+            first_input = input('Введіть першу годину у форматі (16:30): ')
+            if first_input == "0":
+                break
+            second_input = input('Введіть другу годину у форматі (26:15): ')
+            if second_input == "0":
+                break
+            first_time = tuple(map(int, first_input.split(':')))
+            second_time = tuple(map(int, second_input.split(':')))
+            total_h, total_m = sum_hours_minutes([first_time, second_time])
+            print(f"Загальний час: {total_h} годин та {total_m} хвилин")
+
+        elif choice == "3":
+            patrol_calculator()
+
+        elif choice == "4":
+            time_list = []
+            while True:
                 if time_list:
-                    removed = time_list.pop()
-                    print(f"❌ Видалено останній час: {removed[0]:02d}:{removed[1]:02d}")
+                    print("Введені часи:", ", ".join([f"{h:02d}:{m:02d}" for h, m in time_list]))
+                data_input = input("Введіть час у форматі ГГ:ХХ (наприклад 01:30). "
+                                   "Введіть '=' щоб підрахувати суму, '-' щоб видалити останній, "
+                                   "'q' щоб вийти у меню, або '0' для завершення: ")
 
-            elif data_input.lower() == "q":
-                print("Вихід без підрахунку.")
-                break
+                if data_input == "0":
+                    print("✅ Програма завершена користувачем.")
+                    return
 
-            else:
-                try:
-                    hours, minutes = map(int, data_input.split(":"))
-                    time_list.append((hours, minutes))
-                except ValueError:
-                    print("❌ Невірний формат! Введіть у вигляді ГГ:ХХ")
+                if data_input == "=":
+                    total_h, total_m = sum_hours_minutes(time_list)
+                    print("Введені часи:", ", ".join([f"{h:02d}:{m:02d}" for h, m in time_list]))
+                    print(f"Загальний час: {total_h} годин та {total_m} хвилин")
+                    break
+
+                elif data_input == "-":
+                    if time_list:
+                        removed = time_list.pop()
+                        print(f"❌ Видалено останній час: {removed[0]:02d}:{removed[1]:02d}")
+                    else:
+                        print("⚠️ Список порожній.")
+
+                elif data_input.lower() == "q":
+                    print("↩️ Повернення у меню.")
+                    break
+
+                else:
+                    try:
+                        hours, minutes = map(int, data_input.split(":"))
+                        time_list.append((hours, minutes))
+                    except ValueError:
+                        print("❌ Невірний формат! Введіть у вигляді ГГ:ХХ")
 
 
 if __name__ == "__main__":
